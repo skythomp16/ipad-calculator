@@ -14,67 +14,68 @@ struct ContentView: View {
     let thirdRow = ["4", "5", "6", "-"]
     let fourthRow = ["1", "2", "3", "+"]
     let lastRow = ["0", ".", "="]
+    let numRows = 5
     var body: some View {
         VStack {
             VStack {
-                HStack {
-                    Text("Hello").font(.title)
-                }
+                HStack(content: {
+                    Text("0").font(.system(size:60))
+                })
             }.frame(minWidth: 44, maxWidth: .infinity, minHeight: 250).background(Color(red: 64 / 255, green: 64 / 255, blue: 64 / 255)).foregroundColor(Color.white)
             VStack(spacing: 1, content: {
                 HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
-                        Button(action: {
-                           // flag was tapped
+                        Button(action: { buttonClick(buttonText: self.topRow[number])
+                            
                         }) {
-                            Text(self.topRow[number])
-                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                            Text(self.topRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                        }
                     }
                 })
                 HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: {
-                           // flag was tapped
+                           buttonClick(buttonText: self.secondRow[number])
                         }) {
-                            Text(self.secondRow[number])
-                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                            Text(self.secondRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                        }
                     }
                 })
                 HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: {
-                           // flag was tapped
+                           buttonClick(buttonText: self.thirdRow[number])
                         }) {
-                            Text(self.thirdRow[number])
-                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                            Text(self.thirdRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                        }
                     }
                 })
                 HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: {
-                           // flag was tapped
+                           buttonClick(buttonText: self.fourthRow[number])
                         }) {
-                            Text(self.fourthRow[number])
-                            }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                            Text(self.fourthRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                            }
                     }
                 })
                 HStack (spacing: 1, content:{
                     HStack (spacing: 1, content:{
                         ForEach(0 ..< 1) { number in
                             Button(action: {
-                               // flag was tapped
+                               buttonClick(buttonText: self.lastRow[number])
                             }) {
-                                Text(self.lastRow[number])
-                                }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                                Text(self.lastRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                                }
                         }
                     })
                     HStack (spacing: 1, content:{
                         ForEach(0 ..< 2) { number in
                             Button(action: {
-                               // flag was tapped
+                               buttonClick(buttonText: self.lastRow[number + 1])
                             }) {
-                                Text(self.lastRow[number + 1])
-                                }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                                Text(self.lastRow[number + 1]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                                }
                         }
                     })
                 })
@@ -87,4 +88,8 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
+}
+
+func buttonClick(buttonText: String) {
+    print(buttonText)
 }
