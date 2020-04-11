@@ -20,58 +20,66 @@ struct ContentView: View {
                 HStack {
                     Text("Hello").font(.title)
                 }
-            }.frame(minWidth: 44, maxWidth: .infinity, minHeight: 250)
-            VStack {
-                HStack {
+            }.frame(minWidth: 44, maxWidth: .infinity, minHeight: 250).background(Color(red: 64 / 255, green: 64 / 255, blue: 64 / 255)).foregroundColor(Color.white)
+            VStack(spacing: 1, content: {
+                HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: {
                            // flag was tapped
                         }) {
                             Text(self.topRow[number])
-                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity)
+                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
                     }
-                }
-                HStack {
+                })
+                HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: {
                            // flag was tapped
                         }) {
                             Text(self.secondRow[number])
-                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity)
+                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
                     }
-                }
-                HStack {
+                })
+                HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: {
                            // flag was tapped
                         }) {
                             Text(self.thirdRow[number])
-                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity)
+                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
                     }
-                }
-                HStack {
+                })
+                HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: {
                            // flag was tapped
                         }) {
                             Text(self.fourthRow[number])
-                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity)
+                            }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
                     }
-                }
-                HStack {
-                    ForEach(0 ..< 3) { number in
-                        Button(action: {
-                           // flag was tapped
-                        }) {
-                            Text(self.lastRow[number])
-                        }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity)
-                    }
-                }
-            }.buttonStyle(PlainButtonStyle())
-        }
-    }
-    func addNumber() {
-        
+                })
+                HStack (spacing: 1, content:{
+                    HStack (spacing: 1, content:{
+                        ForEach(0 ..< 1) { number in
+                            Button(action: {
+                               // flag was tapped
+                            }) {
+                                Text(self.lastRow[number])
+                                }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                        }
+                    })
+                    HStack (spacing: 1, content:{
+                        ForEach(0 ..< 2) { number in
+                            Button(action: {
+                               // flag was tapped
+                            }) {
+                                Text(self.lastRow[number + 1])
+                                }.frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                        }
+                    })
+                })
+            }).buttonStyle(PlainButtonStyle()).font(.system(size: 24)).background(Color(red: 64 / 255, green: 64 / 255, blue: 64 / 255))
+        }.edgesIgnoringSafeArea(.all)
     }
 }
 
