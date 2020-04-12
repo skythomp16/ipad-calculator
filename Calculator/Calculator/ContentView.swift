@@ -8,6 +8,10 @@
 
 import SwiftUI
 
+class ViewModel: ObservableObject {
+  @Published var calculationText = "0"
+}
+
 struct ContentView: View {
     let topRow = ["AC", "+/-", "%", "/"]
     let secondRow = ["7", "8", "9", "x"]
@@ -15,17 +19,19 @@ struct ContentView: View {
     let fourthRow = ["1", "2", "3", "+"]
     let lastRow = ["0", ".", "="]
     let numRows = 5
+    @ObservedObject var viewModel = ViewModel()
+    
     var body: some View {
         VStack {
             VStack {
                 HStack(content: {
-                    Text("0").font(.system(size:60))
+                    Text(viewModel.calculationText).font(.system(size:60))
                 })
             }.frame(minWidth: 44, maxWidth: .infinity, minHeight: 250).background(Color(red: 64 / 255, green: 64 / 255, blue: 64 / 255)).foregroundColor(Color.white)
             VStack(spacing: 1, content: {
                 HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
-                        Button(action: { buttonClick(buttonText: self.topRow[number])
+                        Button(action: { buttonClick(buttonText: self.topRow[number], viewModel: self.viewModel)
                             
                         }) {
                             Text(self.topRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
@@ -35,7 +41,7 @@ struct ContentView: View {
                 HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: {
-                           buttonClick(buttonText: self.secondRow[number])
+                            buttonClick(buttonText: self.secondRow[number], viewModel: self.viewModel)
                         }) {
                             Text(self.secondRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
                         }
@@ -44,7 +50,7 @@ struct ContentView: View {
                 HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: {
-                           buttonClick(buttonText: self.thirdRow[number])
+                            buttonClick(buttonText: self.thirdRow[number], viewModel: self.viewModel)
                         }) {
                             Text(self.thirdRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
                         }
@@ -53,7 +59,7 @@ struct ContentView: View {
                 HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: {
-                           buttonClick(buttonText: self.fourthRow[number])
+                            buttonClick(buttonText: self.fourthRow[number], viewModel: self.viewModel)
                         }) {
                             Text(self.fourthRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
                             }
@@ -63,7 +69,7 @@ struct ContentView: View {
                     HStack (spacing: 1, content:{
                         ForEach(0 ..< 1) { number in
                             Button(action: {
-                               buttonClick(buttonText: self.lastRow[number])
+                                buttonClick(buttonText: self.lastRow[number], viewModel: self.viewModel)
                             }) {
                                 Text(self.lastRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
                                 }
@@ -72,7 +78,7 @@ struct ContentView: View {
                     HStack (spacing: 1, content:{
                         ForEach(0 ..< 2) { number in
                             Button(action: {
-                               buttonClick(buttonText: self.lastRow[number + 1])
+                                buttonClick(buttonText: self.lastRow[number + 1], viewModel: self.viewModel)
                             }) {
                                 Text(self.lastRow[number + 1]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
                                 }
@@ -90,6 +96,42 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-func buttonClick(buttonText: String) {
-    print(buttonText)
+var number1 : String = ""
+var number2 : String = ""
+var num2 : Bool = false
+
+func buttonClick(buttonText: String, viewModel : ViewModel) {
+    var number = ""
+    if (num2) {
+        number = number2
+    } else {
+        number = number1
+    }
+    switch(buttonText) {
+    case "AC":
+        print("AC was pressed")
+        viewModel.calculationText = "0"
+    case "+/-":
+        print("+/- was pressed")
+    case "%":
+        print("% was pressed")
+    case "/":
+        print("/ was pressed")
+    case "x":
+        print("x was pressed")
+    case "-":
+        print("- was pressed")
+    case "+":
+        print("+ was pressed")
+    case "=":
+        print("= was pressed")
+    default:
+        print(buttonText + " was pressed")
+        if (viewModel.calculationText == "0") {
+            viewModel.calculationText = ""
+        }
+        number = viewModel.calculationText + buttonText
+        viewModel.calculationText = number;
+        print(number)
+    }
 }
