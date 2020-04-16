@@ -99,39 +99,120 @@ struct ContentView_Previews: PreviewProvider {
 var number1 : String = ""
 var number2 : String = ""
 var num2 : Bool = false
+var reset : Bool = false
+var operation = ""
 
 func buttonClick(buttonText: String, viewModel : ViewModel) {
-    var number = ""
-    if (num2) {
-        number = number2
-    } else {
-        number = number1
-    }
     switch(buttonText) {
     case "AC":
         print("AC was pressed")
         viewModel.calculationText = "0"
+        number1 = ""
+        number2 = ""
+        num2 = false
     case "+/-":
         print("+/- was pressed")
+        if (num2) {
+            number2 = "-" + number2
+            viewModel.calculationText = number2
+        } else {
+            number1 = "-" + number1
+            viewModel.calculationText = number1
+        }
     case "%":
         print("% was pressed")
+        var result:Double = 0.0
+        if (num2) {
+            let numb:Int = Int(number2)!
+            result = Double(numb) / Double(100)
+        } else {
+            let numb:Int = Int(number1)!
+            result = Double(numb) / Double(100)
+        }
+        let resultString = String(result)
+        print(resultString)
+        if (num2) {
+            number2 = resultString
+        } else {
+            number1 = resultString
+        }
+        viewModel.calculationText = resultString
     case "/":
         print("/ was pressed")
+        if (!number1.isEmpty) {
+            viewModel.calculationText = "0"
+            number2 = "0"
+            num2 = true
+            operation = "/"
+        }
     case "x":
         print("x was pressed")
+         if (!number1.isEmpty) {
+            viewModel.calculationText = "0"
+            number2 = "0"
+            num2 = true
+            operation = "*"
+        }
     case "-":
         print("- was pressed")
+         if (!number1.isEmpty) {
+            viewModel.calculationText = "0"
+            number2 = "0"
+            num2 = true
+            operation = "-"
+        }
     case "+":
-        print("+ was pressed")
+         if (!number1.isEmpty) {
+            print("+ was pressed")
+            viewModel.calculationText = "0"
+            number2 = "0"
+            num2 = true
+            operation = "+"
+        }
     case "=":
         print("= was pressed")
+        if (!number1.isEmpty || !number2.isEmpty) {
+            let numb1:Double = Double(number1)!
+            let numb2:Double = Double(number2)!
+            var result:Double = 0.0
+            switch(operation) {
+            case "/":
+                result = numb1 / numb2
+            case "*":
+                result = numb1 * numb2
+            case "+":
+                result = numb1 + numb2
+            case "-":
+                result = numb1 - numb2
+            default:
+                print("Something went horribly wrong")
+            }
+            viewModel.calculationText = String(result)
+        } else if (number2.isEmpty && !number1.isEmpty) {
+            viewModel.calculationText = String("0")
+        }
+        
+        //reset everything
+        number1 = ""
+        number2 = ""
+        num2 = false
+        reset = true
     default:
         print(buttonText + " was pressed")
+        if (reset) {
+            viewModel.calculationText = ""
+        }
         if (viewModel.calculationText == "0") {
             viewModel.calculationText = ""
         }
-        number = viewModel.calculationText + buttonText
-        viewModel.calculationText = number;
-        print(number)
+        if (num2) {
+            number2 = viewModel.calculationText + buttonText
+            viewModel.calculationText = number2;
+            print(number2)
+        } else {
+            number1 = viewModel.calculationText + buttonText
+            viewModel.calculationText = number1
+            print(number1)
+        }
     }
 }
