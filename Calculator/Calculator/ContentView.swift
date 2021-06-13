@@ -99,7 +99,6 @@ struct ContentView_Previews: PreviewProvider {
 var number1 : String = ""
 var number2 : String = ""
 var num2 : Bool = false
-var reset : Bool = false
 var operation = ""
 
 func buttonClick(buttonText: String, viewModel : ViewModel) {
@@ -171,7 +170,7 @@ func buttonClick(buttonText: String, viewModel : ViewModel) {
         }
     case "=":
         print("= was pressed")
-        if (!number1.isEmpty || !number2.isEmpty) {
+        if (!number1.isEmpty && !number2.isEmpty) {
             let numb1:Double = Double(number1)!
             let numb2:Double = Double(number2)!
             var result:Double = 0.0
@@ -188,20 +187,14 @@ func buttonClick(buttonText: String, viewModel : ViewModel) {
                 print("Something went horribly wrong")
             }
             viewModel.calculationText = String(result)
-        } else if (number2.isEmpty && !number1.isEmpty) {
-            viewModel.calculationText = String("0")
         }
         
         //reset everything
         number1 = ""
         number2 = ""
         num2 = false
-        reset = true
     default:
         print(buttonText + " was pressed")
-        if (reset) {
-            viewModel.calculationText = ""
-        }
         if (viewModel.calculationText == "0") {
             viewModel.calculationText = ""
         }
