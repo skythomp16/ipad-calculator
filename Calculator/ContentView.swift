@@ -97,11 +97,31 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 var numbers: [Double] = []
+var operations: [String] = []
+var currentNumber:Double? = 0.0
+var currentNumberText:String = ""
 
 func buttonClick(buttonText: String, viewModel : ViewModel) {
     switch(buttonText) {
     case "AC":
         print("AC was pressed")
+        var clearText:Bool = false
+        if (viewModel.calculationText != "0") {
+            clearText = true
+        }
+        viewModel.calculationText = "0"
+        currentNumber = 0.0
+        currentNumberText = ""
+        if (operations.isEmpty == false && clearText) {
+            operations.removeLast()
+        } else {
+            operations.removeAll()
+        }
+        if (numbers.isEmpty == false && clearText) {
+            numbers.removeLast()
+        } else {
+            numbers.removeAll()
+        }
     case "+/-":
         print("+/- was pressed")
     case "%":
@@ -114,9 +134,20 @@ func buttonClick(buttonText: String, viewModel : ViewModel) {
         print("- was pressed")
     case "+":
         print("+ was pressed")
+        if (viewModel.calculationText != "0") {
+            numbers.append(currentNumber!)
+            viewModel.calculationText = "0"
+            currentNumberText = ""
+            
+            operations.append("+")
+        }
     case "=":
         print("= was pressed")
+        //Evaluate operations on numbers
+        
     default:
         print(buttonText + " was pressed")
+        currentNumberText = currentNumberText + buttonText
+        currentNumber = Double(currentNumberText)
     }
 }
