@@ -96,58 +96,72 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-var numbers: [Double] = []
-var operations: [String] = []
-var currentNumber:Double? = 0.0
+var currentNumber:Double = 0.0
+var previousNumber:Double = 0.0
 var currentNumberText:String = ""
+var currentOperation:String = ""
 
 func buttonClick(buttonText: String, viewModel : ViewModel) {
     switch(buttonText) {
     case "AC":
         print("AC was pressed")
-        var clearText:Bool = false
+        var clearAll:Bool = false
         if (viewModel.calculationText != "0") {
-            clearText = true
+            clearAll = true
         }
+        if (clearAll) {
+            // Also zero out the previous number
+            previousNumber = 0.0
+        }
+        // Otherwise just clear the current number being worked on
         viewModel.calculationText = "0"
         currentNumber = 0.0
         currentNumberText = ""
-        if (operations.isEmpty == false && clearText) {
-            operations.removeLast()
-        } else {
-            operations.removeAll()
-        }
-        if (numbers.isEmpty == false && clearText) {
-            numbers.removeLast()
-        } else {
-            numbers.removeAll()
-        }
+        currentOperation = ""
     case "+/-":
         print("+/- was pressed")
     case "%":
         print("% was pressed")
-    case "/":
-        print("/ was pressed")
-    case "x":
-        print("x was pressed")
-    case "-":
-        print("- was pressed")
-    case "+":
-        print("+ was pressed")
-        if (viewModel.calculationText != "0") {
-            numbers.append(currentNumber!)
+    case "/", "x", "-", "+":
+        if (previousNumber == 0.0) {
+            previousNumber = currentNumber
             viewModel.calculationText = "0"
-            currentNumberText = ""
-            
-            operations.append("+")
+        } else {
+            let result = evaluate(currentOperation: currentOperation, num1: previousNumber, num2: currentNumber)
+            viewModel.calculationText = String(result)
+            previousNumber = result
         }
+        currentOperation = buttonText
+        currentNumber = 0.0
+        currentNumberText = ""
     case "=":
         print("= was pressed")
         //Evaluate operations on numbers
-        
+        let result = evaluate(currentOperation: currentOperation, num1: previousNumber, num2: currentNumber)
+        viewModel.calculationText = String(result)
+        previousNumber = result
+        currentNumber = 0.0
+        currentNumberText = ""
     default:
-        print(buttonText + " was pressed")
         currentNumberText = currentNumberText + buttonText
-        currentNumber = Double(currentNumberText)
+        currentNumber = Double(currentNumberText)!
+        viewModel.calculationText = currentNumberText
     }
+}
+
+func evaluate(currentOperation: String, num1: Double, num2: Double) -> Double {
+    var result:Double = 0.0
+    switch(currentOperation) {
+    case "/":
+        result = previousNumber / currentNumber
+    case "x":
+        result = previousNumber * currentNumber
+    case "-":
+        result = previousNumber - currentNumber
+    case "+":
+        result = previousNumber + currentNumber
+    default:
+        print("Should never make it here")
+    }
+    return result
 }
