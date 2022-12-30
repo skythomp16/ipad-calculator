@@ -100,6 +100,7 @@ var currentNumber:Double = 0.0
 var previousNumber:Double = 0.0
 var currentNumberText:String = ""
 var currentOperation:String = ""
+var equalPressed:Bool = false
 
 func buttonClick(buttonText: String, viewModel : ViewModel) {
     switch(buttonText) {
@@ -119,33 +120,54 @@ func buttonClick(buttonText: String, viewModel : ViewModel) {
         currentNumberText = ""
         currentOperation = ""
     case "+/-":
-        print("+/- was pressed")
+        if (currentNumber != 0.0) {
+            currentNumber = -currentNumber
+            currentNumberText = "-" + currentNumberText
+            viewModel.calculationText = currentNumberText
+        }
     case "%":
         print("% was pressed")
+        if (currentNumber != 0) {
+            //TODO: Add percentage logic
+        }
     case "/", "x", "-", "+":
-        if (previousNumber == 0.0) {
-            previousNumber = currentNumber
-            viewModel.calculationText = "0"
-        } else {
-            let result = evaluate(currentOperation: currentOperation, num1: previousNumber, num2: currentNumber)
-            viewModel.calculationText = String(result)
-            previousNumber = result
+        if (equalPressed == false) {
+            if (previousNumber == 0.0) {
+                previousNumber = currentNumber
+            } else {
+                currentNumber = Double(currentNumber)
+                previousNumber = Double(previousNumber)
+                let result = evaluate(currentOperation: currentOperation, num1: previousNumber, num2: currentNumber)
+                viewModel.calculationText = String(result)
+                previousNumber = result
+            }
         }
         currentOperation = buttonText
         currentNumber = 0.0
         currentNumberText = ""
+        equalPressed = false
     case "=":
-        print("= was pressed")
+        currentNumber = Double(currentNumber)
+        previousNumber = Double(previousNumber)
+        print(previousNumber)
+        print(currentNumber)
+        print(previousNumber / currentNumber)
         //Evaluate operations on numbers
         let result = evaluate(currentOperation: currentOperation, num1: previousNumber, num2: currentNumber)
         viewModel.calculationText = String(result)
         previousNumber = result
         currentNumber = 0.0
         currentNumberText = ""
+        equalPressed = true
     default:
         currentNumberText = currentNumberText + buttonText
-        currentNumber = Double(currentNumberText)!
-        viewModel.calculationText = currentNumberText
+        if (currentNumberText == ".") {
+            viewModel.calculationText = "0."
+            currentNumberText = "0."
+        } else {
+            currentNumber = Double(currentNumberText)!
+            viewModel.calculationText = currentNumberText
+        }
     }
 }
 
