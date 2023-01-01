@@ -20,6 +20,7 @@ struct ContentView: View {
     let lastRow = ["0", ".", "="]
     let numRows = 5
     @ObservedObject var viewModel = ViewModel()
+    //@Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack {
@@ -93,6 +94,7 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+        //ContentView().environment(\.colorScheme, .dark)
     }
 }
 
@@ -120,15 +122,27 @@ func buttonClick(buttonText: String, viewModel : ViewModel) {
         currentNumberText = ""
         currentOperation = ""
     case "+/-":
-        if (currentNumber != 0.0) {
+        if (currentNumber != 0.0 && !equalPressed) {
             currentNumber = -currentNumber
             currentNumberText = "-" + currentNumberText
             viewModel.calculationText = currentNumberText
         }
+        if (equalPressed && previousNumber != 0) {
+            previousNumber = -previousNumber
+            let previousNumberText = String(previousNumber)
+            viewModel.calculationText = previousNumberText
+        }
     case "%":
         print("% was pressed")
-        if (currentNumber != 0) {
-            //TODO: Add percentage logic
+        if (currentNumber != 0 && !equalPressed) {
+            currentNumber = currentNumber / 100
+            currentNumberText = String(currentNumber)
+            viewModel.calculationText = currentNumberText
+        }
+        if (equalPressed && previousNumber != 0) {
+            previousNumber = previousNumber / 100
+            let previousNumberText = String(previousNumber)
+            viewModel.calculationText = previousNumberText
         }
     case "/", "x", "-", "+":
         if (equalPressed == false) {
