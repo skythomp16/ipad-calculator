@@ -20,22 +20,22 @@ struct ContentView: View {
     let lastRow = ["0", ".", "="]
     let numRows = 5
     @ObservedObject var viewModel = ViewModel()
-    //@Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack {
+        VStack (spacing: 0, content: {
             VStack {
                 HStack(content: {
                     Text(viewModel.calculationText).font(.system(size:60))
                 })
-            }.frame(minWidth: 44, maxWidth: .infinity, minHeight: 250).background(Color(red: 64 / 255, green: 64 / 255, blue: 64 / 255)).foregroundColor(Color.white)
+            }.frame(minWidth: 44, maxWidth: .infinity, minHeight: 250).background(colorScheme == .dark ? Color(red: 64 / 255, green: 64 / 255, blue: 64 / 255) : Color(UIColor.lightGray)).foregroundColor(colorScheme == .dark ? Color.white : Color.black)
             VStack(spacing: 1, content: {
                 HStack (spacing: 1, content:{
                     ForEach(0 ..< 4) { number in
                         Button(action: { buttonClick(buttonText: self.topRow[number], viewModel: self.viewModel)
                             
                         }) {
-                            Text(self.topRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                            Text(self.topRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(colorScheme == .dark ? Color.gray : Color.white).foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                         }
                     }
                 })
@@ -44,7 +44,7 @@ struct ContentView: View {
                         Button(action: {
                             buttonClick(buttonText: self.secondRow[number], viewModel: self.viewModel)
                         }) {
-                            Text(self.secondRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                            Text(self.secondRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(colorScheme == .dark ? Color.gray : Color.white).foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                         }
                     }
                 })
@@ -53,7 +53,7 @@ struct ContentView: View {
                         Button(action: {
                             buttonClick(buttonText: self.thirdRow[number], viewModel: self.viewModel)
                         }) {
-                            Text(self.thirdRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                            Text(self.thirdRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(colorScheme == .dark ? Color.gray : Color.white).foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                         }
                     }
                 })
@@ -62,7 +62,7 @@ struct ContentView: View {
                         Button(action: {
                             buttonClick(buttonText: self.fourthRow[number], viewModel: self.viewModel)
                         }) {
-                            Text(self.fourthRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                            Text(self.fourthRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(colorScheme == .dark ? Color.gray : Color.white).foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                             }
                     }
                 })
@@ -72,7 +72,7 @@ struct ContentView: View {
                             Button(action: {
                                 buttonClick(buttonText: self.lastRow[number], viewModel: self.viewModel)
                             }) {
-                                Text(self.lastRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                                Text(self.lastRow[number]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(colorScheme == .dark ? Color.gray : Color.white).foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                                 }
                         }
                     })
@@ -81,20 +81,19 @@ struct ContentView: View {
                             Button(action: {
                                 buttonClick(buttonText: self.lastRow[number + 1], viewModel: self.viewModel)
                             }) {
-                                Text(self.lastRow[number + 1]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(Color.gray)
+                                Text(self.lastRow[number + 1]).frame(minWidth: 100, maxWidth: .infinity, minHeight: 44, maxHeight: .infinity).background(colorScheme == .dark ? Color.gray : Color.white).foregroundColor(colorScheme == .dark ? Color.white : Color.black)
                                 }
                         }
                     })
                 })
             }).buttonStyle(PlainButtonStyle()).font(.system(size: 24)).background(Color(red: 64 / 255, green: 64 / 255, blue: 64 / 255))
-        }.edgesIgnoringSafeArea(.all)
+        }).edgesIgnoringSafeArea(.all)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-        //ContentView().environment(\.colorScheme, .dark)
     }
 }
 
@@ -120,17 +119,18 @@ func buttonClick(buttonText: String, viewModel : ViewModel) {
         viewModel.calculationText = "0"
         currentNumber = 0.0
         currentNumberText = ""
+        equalPressed = false
         currentOperation = ""
     case "+/-":
         if (currentNumber != 0.0 && !equalPressed) {
             currentNumber = -currentNumber
             currentNumberText = "-" + currentNumberText
-            viewModel.calculationText = currentNumberText
+            viewModel.calculationText = String(format: "%g", currentNumberText)
         }
         if (equalPressed && previousNumber != 0) {
             previousNumber = -previousNumber
             let previousNumberText = String(previousNumber)
-            viewModel.calculationText = previousNumberText
+            viewModel.calculationText = String(format: "%g", previousNumberText)
         }
     case "%":
         print("% was pressed")
@@ -145,6 +145,7 @@ func buttonClick(buttonText: String, viewModel : ViewModel) {
             viewModel.calculationText = previousNumberText
         }
     case "/", "x", "-", "+":
+        print("current number " + String(currentNumber))
         if (equalPressed == false) {
             if (previousNumber == 0.0) {
                 previousNumber = currentNumber
@@ -152,7 +153,7 @@ func buttonClick(buttonText: String, viewModel : ViewModel) {
                 currentNumber = Double(currentNumber)
                 previousNumber = Double(previousNumber)
                 let result = evaluate(currentOperation: currentOperation, num1: previousNumber, num2: currentNumber)
-                viewModel.calculationText = String(result)
+                viewModel.calculationText = String(format: "%g", result)
                 previousNumber = result
             }
         }
@@ -163,24 +164,40 @@ func buttonClick(buttonText: String, viewModel : ViewModel) {
     case "=":
         currentNumber = Double(currentNumber)
         previousNumber = Double(previousNumber)
-        print(previousNumber)
         print(currentNumber)
-        print(previousNumber / currentNumber)
+        print(previousNumber)
+        if (currentOperation == "") {
+            return;
+        }
         //Evaluate operations on numbers
         let result = evaluate(currentOperation: currentOperation, num1: previousNumber, num2: currentNumber)
-        viewModel.calculationText = String(result)
+        viewModel.calculationText = String(format: "%g", result)
         previousNumber = result
         currentNumber = 0.0
         currentNumberText = ""
         equalPressed = true
     default:
-        currentNumberText = currentNumberText + buttonText
-        if (currentNumberText == ".") {
-            viewModel.calculationText = "0."
-            currentNumberText = "0."
-        } else {
-            currentNumber = Double(currentNumberText)!
+        if (viewModel.calculationText.contains(".") && buttonText == ".") {
+            return;
+        }
+        if (equalPressed && viewModel.calculationText.contains(".") == false && viewModel.calculationText != "") {
+            currentNumberText = viewModel.calculationText + buttonText
             viewModel.calculationText = currentNumberText
+            previousNumber = Double(currentNumberText)!
+            print("previous number " + String(previousNumber))
+        } else if (equalPressed) {
+            currentNumberText = currentNumberText + buttonText
+            previousNumber = Double(currentNumberText)!
+            viewModel.calculationText = currentNumberText
+        } else {
+            currentNumberText = currentNumberText + buttonText
+            if (currentNumberText == ".") {
+                viewModel.calculationText = "0."
+                currentNumberText = "0."
+            } else {
+                currentNumber = Double(currentNumberText)!
+                viewModel.calculationText = currentNumberText
+            }
         }
     }
 }
